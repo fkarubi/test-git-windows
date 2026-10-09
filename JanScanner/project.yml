@@ -1,0 +1,30 @@
+name: JanScanner
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  JanScanner:
+    type: application
+    platform: iOS
+    sources:
+      - path: JanScanner
+        excludes:
+          - Info.plist
+    info:
+      path: JanScanner/Info.plist
+      properties:
+        CFBundleDisplayName: JANスキャナー
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        NSCameraUsageDescription: JANコードを読み取るためにカメラを使用します。
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.JanScanner
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"

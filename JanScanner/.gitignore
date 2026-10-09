@@ -1,0 +1,4 @@
+*.xcodeproj/
+JanScanner/Info.plist
+xcuserdata/
+DerivedData/
