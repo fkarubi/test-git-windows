@@ -6,8 +6,13 @@ struct JanScannerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(store)
+            TabView {
+                ContentView()
+                    .environmentObject(store)
+                    .tabItem { Label("スキャン", systemImage: "barcode.viewfinder") }
+                PhotoCheckView()
+                    .tabItem { Label("写真で確認", systemImage: "photo") }
+            }
         }
     }
 }

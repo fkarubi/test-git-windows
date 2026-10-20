@@ -17,14 +17,40 @@ targets:
         CFBundleDisplayName: JANスキャナー
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
-        NSCameraUsageDescription: JANコードを読み取るためにカメラを使用します。
+        NSCameraUsageDescription: JANコードの読み取りと、「写真で確認」での撮影にカメラを使用します。
+        NSPhotoLibraryUsageDescription: 「写真で確認」で、選んだ写真を中継サーバーに送って確認するために使用します。
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIFileSharingEnabled: true
         LSSupportsOpeningDocumentsInPlace: true
+        # http 通信は中継サーバー（Tailscale上のMac）だけに許可する。
+        # NSAllowsArbitraryLoads は使わない。100.64.0.0/10（CGNAT）は
+        # NSAllowsLocalNetworking の対象外なので、ホストを個別に指定する。
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            "100.127.247.83":
+              NSExceptionAllowsInsecureHTTPLoads: true
+            ts.net:
+              NSIncludesSubdomains: true
+              NSExceptionAllowsInsecureHTTPLoads: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.JanScanner
         TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"
+    scheme:
+      testTargets:
+        - JanScannerTests
+  JanScannerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - JanScannerTests
+    dependencies:
+      - target: JanScanner
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.JanScannerTests
         SWIFT_VERSION: "5.0"
