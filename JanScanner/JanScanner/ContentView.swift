@@ -7,6 +7,7 @@ struct ContentView: View {
     @AppStorage("allowDuplicates") private var allowDuplicates = false
     @State private var banner: String?
     @State private var showClearConfirm = false
+    @State private var showRelay = false
 
     var body: some View {
         NavigationStack {
@@ -26,12 +27,21 @@ struct ContentView: View {
                         Image(systemName: "ellipsis.circle")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button {
+                        showRelay = true
+                    } label: {
+                        Image(systemName: "photo")
+                    }
+                    .accessibilityLabel("写真で確認")
                     ShareLink(item: store.csvURL) {
                         Label("CSV共有", systemImage: "square.and.arrow.up")
                     }
                     .disabled(store.records.isEmpty)
                 }
+            }
+            .navigationDestination(isPresented: $showRelay) {
+                RelayPhotoView()
             }
             .confirmationDialog("読み取ったコードをすべて削除しますか？",
                                 isPresented: $showClearConfirm,

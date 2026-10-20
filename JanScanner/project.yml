@@ -17,7 +17,24 @@ targets:
         CFBundleDisplayName: JANスキャナー
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
-        NSCameraUsageDescription: JANコードを読み取るためにカメラを使用します。
+        NSCameraUsageDescription: JANコードを読み取るため、およびバーコードの有無を確認する写真を撮るためにカメラを使用します。
+        # 平文HTTPの例外は Tailscale だけに絞る。
+        # - 100.64.0.0/10 は CGNAT で、NSAllowsLocalNetworking（RFC1918 / .local）では通らない。
+        # - 例外ドメインに単体のIPは iOS 17 以降で書ける。CIDR で Tailscale の IPv4 全体を許可する。
+        #   iOS 16 は IP への接続を ATS が既定で許可する。iOS 17 以降はここの CIDR が必要。
+        # - MagicDNS（*.ts.net）は公開名なので、サブドメイン込みの ts.net 例外が別途必要。
+        # - NSAllowsArbitraryLoads は使わない（全ホストのHTTPが開く。NSAllowsLocalNetworking と
+        #   併記すると iOS 10 以降では ArbitraryLoads 側が無視される）。
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            # 初期URLの個別IP。古い iOS 17 で CIDR が効かないときの保険。
+            "100.127.247.83":
+              NSExceptionAllowsInsecureHTTPLoads: true
+            "100.64.0.0/10":
+              NSExceptionAllowsInsecureHTTPLoads: true
+            ts.net:
+              NSIncludesSubdomains: true
+              NSExceptionAllowsInsecureHTTPLoads: true
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -28,3 +45,17 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.JanScanner
         TARGETED_DEVICE_FAMILY: "1"
         SWIFT_VERSION: "5.0"
+      configs:
+        Debug:
+          ENABLE_TESTABILITY: YES
+  JanScannerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: JanScannerTests
+    dependencies:
+      - target: JanScanner
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.JanScannerTests
